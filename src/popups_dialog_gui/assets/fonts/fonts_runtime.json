@@ -1,0 +1,344 @@
+[
+  {
+    "family": "Anton",
+    "style": "Regular",
+    "file": "Anton-Regular.ttf",
+    "source_kind": "static_copy",
+    "source_file": "Anton-Regular.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/Anton/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Arimo",
+    "style": "Regular",
+    "file": "Arimo-Regular.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Arimo[wght].ttf",
+    "axes_used": {
+      "wght": 400.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Arimo/LICENSE.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Arimo",
+    "style": "Bold",
+    "file": "Arimo-Bold.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Arimo[wght].ttf",
+    "axes_used": {
+      "wght": 700.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Arimo/LICENSE.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Arimo",
+    "style": "Italic",
+    "file": "Arimo-Italic.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Arimo-Italic[wght].ttf",
+    "axes_used": {
+      "wght": 400.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Arimo/LICENSE.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Arimo",
+    "style": "BoldItalic",
+    "file": "Arimo-BoldItalic.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Arimo-Italic[wght].ttf",
+    "axes_used": {
+      "wght": 700.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Arimo/LICENSE.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Bebas Neue",
+    "style": "Regular",
+    "file": "Bebas Neue-Regular.ttf",
+    "source_kind": "static_copy",
+    "source_file": "BebasNeue-Regular.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/Bebas Neue/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Caveat",
+    "style": "Regular",
+    "file": "Caveat-Regular.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Caveat[wght].ttf",
+    "axes_used": {
+      "wght": 400.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Caveat/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Caveat",
+    "style": "Bold",
+    "file": "Caveat-Bold.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Caveat[wght].ttf",
+    "axes_used": {
+      "wght": 700.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Caveat/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "IBM Plex Mono",
+    "style": "Regular",
+    "file": "IBM Plex Mono-Regular.ttf",
+    "source_kind": "static_copy",
+    "source_file": "IBMPlexMono-Regular.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/IBM Plex Mono/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "IBM Plex Mono",
+    "style": "Bold",
+    "file": "IBM Plex Mono-Bold.ttf",
+    "source_kind": "static_copy",
+    "source_file": "IBMPlexMono-Bold.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/IBM Plex Mono/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "IBM Plex Mono",
+    "style": "Italic",
+    "file": "IBM Plex Mono-Italic.ttf",
+    "source_kind": "static_copy",
+    "source_file": "IBMPlexMono-ExtraLightItalic.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/IBM Plex Mono/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "IBM Plex Mono",
+    "style": "BoldItalic",
+    "file": "IBM Plex Mono-BoldItalic.ttf",
+    "source_kind": "static_copy",
+    "source_file": "IBMPlexMono-BoldItalic.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/IBM Plex Mono/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Inter",
+    "style": "Regular",
+    "file": "Inter-Regular.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Inter[opsz,wght].ttf",
+    "axes_used": {
+      "wght": 400.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Inter/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Inter",
+    "style": "Bold",
+    "file": "Inter-Bold.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Inter[opsz,wght].ttf",
+    "axes_used": {
+      "wght": 700.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Inter/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Inter",
+    "style": "Italic",
+    "file": "Inter-Italic.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Inter-Italic[opsz,wght].ttf",
+    "axes_used": {
+      "wght": 400.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Inter/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Inter",
+    "style": "BoldItalic",
+    "file": "Inter-BoldItalic.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Inter-Italic[opsz,wght].ttf",
+    "axes_used": {
+      "wght": 700.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Inter/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Lobster",
+    "style": "Regular",
+    "file": "Lobster-Regular.ttf",
+    "source_kind": "static_copy",
+    "source_file": "Lobster-Regular.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/Lobster/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Monoton",
+    "style": "Regular",
+    "file": "Monoton-Regular.ttf",
+    "source_kind": "static_copy",
+    "source_file": "Monoton-Regular.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/Monoton/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Pacifico",
+    "style": "Regular",
+    "file": "Pacifico-Regular.ttf",
+    "source_kind": "static_copy",
+    "source_file": "Pacifico-Regular.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/Pacifico/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Press Start 2P",
+    "style": "Regular",
+    "file": "Press Start 2P-Regular.ttf",
+    "source_kind": "static_copy",
+    "source_file": "PressStart2P-Regular.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/Press Start 2P/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "UnifrakturCook",
+    "style": "Bold",
+    "file": "UnifrakturCook-Bold.ttf",
+    "source_kind": "static_copy",
+    "source_file": "UnifrakturCook-Bold.ttf",
+    "axes_used": {},
+    "license_files": [
+      "licenses/UnifrakturCook/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Yrsa",
+    "style": "Regular",
+    "file": "Yrsa-Regular.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Yrsa[wght].ttf",
+    "axes_used": {
+      "wght": 400.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Yrsa/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Yrsa",
+    "style": "Bold",
+    "file": "Yrsa-Bold.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Yrsa[wght].ttf",
+    "axes_used": {
+      "wght": 700.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Yrsa/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Yrsa",
+    "style": "Italic",
+    "file": "Yrsa-Italic.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Yrsa-Italic[wght].ttf",
+    "axes_used": {
+      "wght": 400.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Yrsa/OFL.txt"
+    ],
+    "notes": ""
+  },
+  {
+    "family": "Yrsa",
+    "style": "BoldItalic",
+    "file": "Yrsa-BoldItalic.ttf",
+    "source_kind": "variable_instance",
+    "source_file": "Yrsa-Italic[wght].ttf",
+    "axes_used": {
+      "wght": 700.0,
+      "opsz": 14.0
+    },
+    "license_files": [
+      "licenses/Yrsa/OFL.txt"
+    ],
+    "notes": ""
+  }
+]

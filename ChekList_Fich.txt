@@ -1,0 +1,14 @@
+
+[XXX]   .gitignore
+[XXX]   LICENSE.md
+[XX_]   docs/API_REFERENCE_es.md
+[XX_]   docs/API_REFERENCE_en.md
+Para las siguientes habría que lograr afianzar  el funcionamiento de todas las demos.
+[___]   docs/OVERVIEW_en.md
+[___]   docs/OVERVIEW_es.md
+[___]   docs/README_es.md
+[___]   docs/README.md
+[___]   pyproject.toml
+[___]   main.py
+[___]   README_es.md
+[___]   README.md
