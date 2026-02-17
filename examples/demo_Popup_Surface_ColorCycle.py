@@ -1,4 +1,4 @@
-# demo_Popup_Surface_ColorCycle.py
+# examples/demo_Popup_Surface_ColorCycle.py
 # Descripción breve: Pinta un rectángulo con un color derivado de time (solo 1er frame en este paso)
 # Orden tutorial: 2.2
 
@@ -13,8 +13,8 @@ class ColorCycle(InteractiveContent):
     NOTA:
         Un stub es un componente de software simplificado que simula el comportamiento de otro módulo o servicio, 
         usándose para aislar el código devolviendo datos predefinidos sin ejecutar la lógica real, lo cual permite 
-        probar diferentes escenarios (éxito, error) de forma controlada y aísla dependencias. Suele usarse en pruebas,
-        pero para nosotros es la forma de conectar un comportamiento dinámico con objeto InteractiveContent.
+        probar diferentes escenarios (éxito, error) de forma controlada y aíslar dependencias. Suele usarse en pruebas,
+        pero para nosotros es la forma de conectar un comportamiento dinámico con objetos InteractiveContent.
     - on_mount: prepara fuente
     - draw: pinta un rectángulo con un color derivado de time (solo 1er frame en este paso)
     """
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     pygame.init()
     W, H = 900, 700
     MainDisplay = pygame.display.set_mode((W, H))
-    pygame.display.set_caption("Demo Paso 2 - InteractiveContent dentro de SurfacePPsct (clipping + mount)")
+    pygame.display.set_caption("2.2) demo_Popup_Surface_ColorCycle.py")
     MainDisplay.fill((40, 40, 40))
     pygame.display.flip()
     time.sleep(0.3)

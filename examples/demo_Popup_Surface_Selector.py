@@ -1,4 +1,4 @@
-# Archivo: demos/demo_Popup_Surface_Selector.py
+# examples/demo_Popup_Surface_Selector.py
 # Descripción breve: Selector de superficies con navegación 
 # Orden tutorial: 2.3
 
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     pygame.init()
     ancho, alto = 800, 800
     MainDisplay = pygame.display.set_mode((ancho, alto))
-    pygame.display.set_caption("Demo Surface Selector")
+    pygame.display.set_caption("2.3) demo_Popup_Surface_Selector.py")
     MainDisplay.fill((30, 30, 30))
     pygame.display.flip()
     time.sleep(0.5)

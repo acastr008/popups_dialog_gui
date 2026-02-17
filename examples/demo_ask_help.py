@@ -1,4 +1,4 @@
-# examples/demo_simple.py
+# examples/demo_ask_help.py
 # Descripción breve: Muestra un mensaje, ofrece ayuda y solicita una respuesta. (Prueba básica de Popup_Dialog.)
 # Orden tutorial: 1.2
 
@@ -28,7 +28,12 @@ Esto permite:
 
 Para salir de la ayuda pulse la tecla <ESC>
 """
+    # Guardar el frame actual para poder restaurarlo al salir del overlay.
+    # (ShowHelpOverlay es modal y el último frame del overlay puede quedarse en pantalla.)
+    frozen_frame = main_display.copy()
     ShowHelpOverlay(main_display, MensAyuda, title="Ayuda")
+    main_display.blit(frozen_frame, (0, 0)) # Recuperar el frame previo a mostrar la ayuda.
+    pygame.display.flip()
 
 
 
@@ -40,6 +45,8 @@ pygame.init() # Inicializar Pygame
 ventana_ancho = 1500 # Configuración de la ventana principal de pygame
 ventana_alto = 800
 MainDisplay = pygame.display.set_mode((ventana_ancho, ventana_alto)) 
+pygame.display.set_caption("1.2) demo_ask_help.py")
+
 print(">>>", MainDisplay.get_size())
 
 # - - - - - - - - - - - INICIALIZAVION DEL MÓDULO  - - - - - - - - - - - #
@@ -47,6 +54,13 @@ print(">>>", MainDisplay.get_size())
 IniPopupDialog(MainDisplay, 'playful_childlike') # Inicializamos el módulo pasando la ventana principal de Pygame y el eestilo 'playful_childlike'
 print("TRAZA  (main) "+'>'*23, MainDisplay)
 MainDisplay.fill((170,170,170))
+pygame.draw.circle(MainDisplay, "Blue", (700,400), 100 )
+pygame.draw.circle(MainDisplay, "Yellow", (700,600), 170 )
+pygame.draw.circle(MainDisplay, "Red", (500,200), 270 )
+pygame.draw.circle(MainDisplay, "Green", (1200,100), 100 )
+pygame.draw.circle(MainDisplay, "Orange", (1200,600), 300 )
+pygame.draw.circle(MainDisplay, "White", (150,150), 150 )
+pygame.draw.circle(MainDisplay, "Black", (1000,300), 170 )
 pygame.display.flip()
 
 cont=0

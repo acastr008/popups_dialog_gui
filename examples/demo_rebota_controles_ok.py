@@ -1,4 +1,4 @@
-# demos/demo_rebota_controles.py
+# examples/demo_rebota_controles.py
 # Descripción breve: Partículas rebotando con controles de teclado y de ratón (coord. relativas a rectángulo kernel).
 # Orden tutorial: 2.4
 #
@@ -196,7 +196,7 @@ if __name__ == "__main__":
     pygame.init()
     W, H = WIDTH, HEIGTH
     MainDisplay = pygame.display.set_mode((W, H))
-    pygame.display.set_caption("Demo  Partículas con controles (coords relativas)")
+    pygame.display.set_caption("2.4) demo_rebota_controles.py")
     # Color de fondo de la ventana principal (fuera del popup)
     MainDisplay.fill((0, 0, 20))  # azul muy oscuro exterior
     pygame.display.flip()

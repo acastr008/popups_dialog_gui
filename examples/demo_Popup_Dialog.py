@@ -1,6 +1,6 @@
-# demos/demo_Popup_Dialog.py
 from __future__ import annotations
 
+# examples/demo_Popup_Dialog.py
 # Descripción breve: Ofrece un amplio menú de demos de Popup_Dialog (salvo las que usan contenidos interactivos) 
 # Orden tutorial: 1.3
 
@@ -123,6 +123,8 @@ pygame.init() # Inicializar Pygame
 ventana_ancho = 1500 # Configuración de la ventana principal de pygame
 ventana_alto = 800
 MainDisplay = pygame.display.set_mode((ventana_ancho, ventana_alto)) 
+pygame.display.set_caption("1.3) demo_Popup_Dialog.py")
+
 print(">>>", MainDisplay.get_size())
 
 # - - - - - - - - - - - INICIALIZAVION DEL MÓDULO  - - - - - - - - - - - #

@@ -30,6 +30,7 @@ pygame.init() # Inicializar Pygame
 ventana_ancho = 1500 # Configuración de la ventana principal de pygame
 ventana_alto = 800
 MainDisplay = pygame.display.set_mode((ventana_ancho, ventana_alto)) 
+pygame.display.set_caption("1.1) demo_simple.py")
 print(">>>", MainDisplay.get_size())
 
 # - - - - - - - - - - - INICIALIZAVION DEL MÓDULO  - - - - - - - - - - - #

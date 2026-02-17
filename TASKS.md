@@ -1,5 +1,6 @@
 # Tareas pendientes
 
+- Revisar documentacion relacionada con demos con opción de ventana de ayuda.
 
 - Pendiente de Ilustrar con imágenes el TUTORIAL.md
 
@@ -14,6 +15,10 @@
 - ???
 
 # Tareas ya realizadas por orden cronológico
+
+- (17-feb-2026) Revisadas todas las demos, y retocadas las cabeceras y titulos de ventana pygame.
+
+- (16-feb-2026) Conseguimos subirlo a GitHup. Hubp que modificar pyproject.toml, .gitignore, y crear entorno virtual pyenv_popup_gui.
 
 - (15-feb-2026) Retomamos el desarrollo: demo_showhelpoverlay_directo.py, demo_popuphelp_embebido.py, HELP_API_LEVELS_es.md
 

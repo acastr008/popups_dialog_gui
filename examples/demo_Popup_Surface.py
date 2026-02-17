@@ -1,5 +1,4 @@
-# Archivo: demo_Popup_Surface.py
-
+# examples/demo_Popup_Surface.py
 # Descripción breve: Esta demo es un ejemplo muy sencillo de demostración del funcionamiento de SurfacePPsct
 # Orden tutorial: 2.1
 
@@ -29,7 +28,7 @@ pygame.init()
 ancho, alto = 800, 800
 MainDisplay = pygame.display.set_mode((ancho, alto))
 MainDisplay.fill((30, 30, 30))
-pygame.display.set_caption("Demo SurfacePPsct")
+pygame.display.set_caption("2.1) demo_Popup_Surface.py")
 pygame.display.flip()
 time.sleep(1)
 
