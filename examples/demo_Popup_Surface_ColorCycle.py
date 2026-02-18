@@ -1,11 +1,13 @@
-# examples/demo_Popup_Surface_ColorCycle.py
+# Archivo: examples/demo_Popup_Surface_ColorCycle.py
 # Descripción breve: Pinta un rectángulo con un color derivado de time (solo 1er frame en este paso)
-# Orden tutorial: 2.2
+# Orden tutorial: 1.4
 
 import pygame
 import time
 from popups_dialog_gui.Popup_Dialog import PopupDialogWindow, IniPopupDialog, SurfacePPsct
 from popups_dialog_gui.interactive_content import InteractiveContent
+
+win_title="1.4) examples/demo_Popup_Surface_ColorCycle.py"
 
 class ColorCycle(InteractiveContent):
     """
@@ -46,7 +48,7 @@ if __name__ == "__main__":
     pygame.init()
     W, H = 900, 700
     MainDisplay = pygame.display.set_mode((W, H))
-    pygame.display.set_caption("2.2) demo_Popup_Surface_ColorCycle.py")
+    pygame.display.set_caption(win_title)
     MainDisplay.fill((40, 40, 40))
     pygame.display.flip()
     time.sleep(0.3)

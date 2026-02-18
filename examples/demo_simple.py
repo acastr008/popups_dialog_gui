@@ -1,4 +1,4 @@
-# examples/demo_simple.py
+# Archivo: examples/demo_simple.py
 # Descripción breve: Muestra un mensaje. (Prueba básica de Popup_Dialog. Admite elección de estilo)
 # Orden tutorial: 1.1
 
@@ -6,6 +6,9 @@ import pygame
 import time, os
 
 from popups_dialog_gui.Popup_Dialog import IniPopupDialog, PopupNOTICE
+
+win_title="1.1) examples/demo_simple.py"
+
 
 ################################################################################################################
 ###########################################   M  A  I  N  ######################################################
@@ -30,7 +33,7 @@ pygame.init() # Inicializar Pygame
 ventana_ancho = 1500 # Configuración de la ventana principal de pygame
 ventana_alto = 800
 MainDisplay = pygame.display.set_mode((ventana_ancho, ventana_alto)) 
-pygame.display.set_caption("1.1) demo_simple.py")
+pygame.display.set_caption(win_title)
 print(">>>", MainDisplay.get_size())
 
 # - - - - - - - - - - - INICIALIZAVION DEL MÓDULO  - - - - - - - - - - - #

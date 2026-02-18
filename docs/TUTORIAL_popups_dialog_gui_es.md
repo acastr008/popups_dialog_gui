@@ -38,7 +38,7 @@ Muchos de los beneficios de `popups_dialog_gui` se pueden obtener con un uso sim
 - [1.5) demo_Popup_Surface_Selector.py](#15-demo_popup_surface_selectorpy)
 - [2.1) demo_ask_help.py](#21-demo_ask_helppy)
 - [2.2) demo_popuphelp_embebido.py](#22-demo_popuphelp_embebidopy)
-- [2.3) demo_rebota_controles.py](#23-demo_rebota_controlespy)
+- [2.3) demo_rebota_controles_ok.py](#23-demo_rebota_controles_okpy)
 
 ---
 
@@ -105,7 +105,7 @@ En la imagen podemos ver como usa una PopupASK() como menú general para elegir 
 
 ---
 
-## 2.1) demo_Popup_Surface.py
+## 1.3) demo_Popup_Surface.py
 
 ### Qué aprenderás en esta demo:
 
@@ -129,7 +129,7 @@ En la imagen podemos ver como usa una PopupASK() como menú general para elegir 
 
 ---
 
-## 2.2) demo_Popup_Surface_ColorCycle.py
+## 1.4) demo_Popup_Surface_ColorCycle.py
 
 ### Qué aprenderás en esta demo:
 
@@ -193,7 +193,7 @@ En la imagen podemos ver como usa una PopupASK() como menú general para elegir 
 
 ---
 
-## 2.3) demo_Popup_Surface_Selector.py
+## 1.5) demo_Popup_Surface_Selector.py
 
 ### Qué aprenderás en esta demo:
 
@@ -222,14 +222,15 @@ En la imagen podemos ver como usa una PopupASK() como menú general para elegir 
 
 ---
 
-# HELP_OPTIONS_TUTORIAL
-*Documento: opciones para integrar un sistema de ayuda (Markdown) en aplicaciones Pygame con `help_core_pygame` y `popups_dialog_gui`.*
+## Parte 2) Demos con ayuda (Markdown)
 
-Fecha de generación: **18/Feb/2026 08:30** (Europe/Madrid)
+En esta segunda parte se muestran **tres patrones complementarios** para integrar un sistema de ayuda en Markdown con `help_core_pygame` y `popups_dialog_gui`.
+
+Fecha de referencia: *(informativa; no afecta a las demos)*
 
 ---
 
-## 1. Objetivo del tutorial
+### Objetivo de esta parte
 
 Estas demos muestran **tres patrones complementarios** para integrar ayuda en Markdown dentro de una aplicación Pygame:
 
@@ -248,9 +249,9 @@ Las tres demos que se consideran “mínimas y no redundantes” son:
 
 ---
 
-## 2. Dos enfoques: `ShowHelpOverlay()` vs `PopupHELP()`
+### Bloque común: Dos enfoques: `ShowHelpOverlay()` vs `PopupHELP()`
 
-### 2.1 `ShowHelpOverlay(display, md_text, ...)` (help_core_pygame)
+#### `ShowHelpOverlay(display, md_text, ...)` (help_core_pygame)
 
 **Qué es:**  
 Un visor de ayuda en formato overlay **dibujado directamente sobre el `display`**. Suele ser **modal** en el sentido práctico (captura eventos hasta salir), pero *no pertenece* al sistema de popups.
@@ -269,7 +270,7 @@ Un visor de ayuda en formato overlay **dibujado directamente sobre el `display`*
 
 ---
 
-### 2.2 `PopupHELP(md_text, ...)` (popups_dialog_gui)
+#### `PopupHELP(md_text, ...)` (popups_dialog_gui)
 
 **Qué es:**  
 Un **popup** (ventana de diálogo) que contiene un visor Markdown (internamente usando `help_core_pygame`) como contenido interactivo embebido.
@@ -287,7 +288,7 @@ Un **popup** (ventana de diálogo) que contiene un visor Markdown (internamente 
 
 ---
 
-## 3. Consideraciones clave (independientes de la demo)
+### Consideraciones prácticas (independientes de la demo)
 
 ### 3.1 ¿Tu aplicación tiene bucle general de eventos?
 
@@ -384,7 +385,7 @@ La demo `demo_ask_help.py` pone énfasis en esta segunda.
 
 ---
 
-## 4. Qué debe asimilar el usuario con cada demo
+### Qué debe asimilar el usuario con cada demo
 
 ### 4.1 `demo_ask_help.py` — “Ayuda como rama de un diálogo”
 
@@ -465,7 +466,84 @@ La demo `demo_ask_help.py` pone énfasis en esta segunda.
 
 ---
 
-## 5. Recomendación de aprendizaje (orden sugerido)
+
+---
+
+## 2.1) demo_ask_help.py
+
+### Qué aprenderás en esta demo:
+
+1. Cómo integrar ayuda Markdown como **overlay directo** mediante `ShowHelpOverlay()`:
+   - La ayuda se dibuja sobre el `display` principal y se cierra con `ESC` (o el mecanismo definido por el visor).
+2. Cómo usar un popup de decisión (`PopupASK`) con una opción **“Ayuda”** que vuelve al flujo original:
+   - Patrón típico: *pregunta → ayuda → vuelvo a la pregunta*.
+3. Cómo evitar que el overlay “deje pintado” su último frame:
+   - Se aplica un patrón de **congelar/restaurar** el contenido anterior del `display` (copiar, mostrar ayuda, restaurar y hacer `flip`).
+4. Cuándo este patrón es suficiente (y cuándo conviene `PopupHELP()`):
+   - Si solo quieres ayuda puntual en un flujo simple, el overlay directo es una solución ligera.
+
+### API utilizada (núcleo):
+- `IniPopupDialog(Display, Style_ID)`
+- `PopupASK(Message, Buttons, Title=...)`
+- `PopupNOTICE(Message, IdButt=...)`
+- `help_core_pygame.ShowHelpOverlay(Display, MarkdownText, Title=...)`
+
+### Resultado observable:
+- Se muestra un `PopupASK` con varias opciones, incluida “Ayuda”.
+- Al pulsar “Ayuda” aparece un visor Markdown en overlay.
+- Al salir de la ayuda, se recupera la pantalla anterior y el flujo vuelve al `PopupASK` sin artefactos.
+
+---
+
+## 2.2) demo_popuphelp_embebido.py
+
+### Qué aprenderás en esta demo:
+
+1. Diferencia práctica entre overlay directo y **ayuda como popup**:
+   - Aquí la ayuda no se dibuja “por encima” como overlay, sino que se abre un **popup de ayuda** mediante `PopupHELP()`.
+2. Cómo pausar un popup con contenido dinámico antes de mostrar ayuda:
+   - Patrón recomendado: `popup.pause()` → `PopupHELP(...)` → limpieza de `dt` → `popup.resume()`.
+3. Ventajas de `PopupHELP()` dentro del ecosistema `popups_dialog_gui`:
+   - Coherencia visual (marco, estilo, botones), y un comportamiento modal alineado con el resto de popups.
+
+### API utilizada (núcleo):
+- `IniPopupDialog(Display, Style_ID)`
+- `PopupDialogWindow(...).Run()` (popup principal)
+- `SurfacePPsct(InteractiveContent, interactive_size=...)`
+- `PopupHELP(MarkdownText, Title=..., interactive_size=..., ...)`
+
+### Resultado observable:
+- En el popup principal se observa un kernel con animación (p.ej. bola rebotando).
+- Al pulsar “Ayuda” se abre un popup de ayuda con scroll.
+- Al cerrar la ayuda, vuelve el popup principal y la animación continúa sin “saltos” ni pérdida de estado.
+
+---
+
+## 2.3) demo_rebota_controles_ok.py
+
+### Qué aprenderás en esta demo:
+
+1. Integración robusta de un kernel interactivo “real” (`InteractiveContent`) dentro de un popup:
+   - Ratón (LMB/RMB), rueda, teclado, pausa y cambios de tamaño/velocidad.
+2. Correcta gestión de coordenadas y offsets del kernel:
+   - El contenido trabaja en coordenadas relativas al área útil y `draw()` aplica el offset del rect del kernel.
+3. Uso de `PopupHELP()` en un bucle basado en `popup.step(events, dt_ms)`:
+   - La demo muestra cómo abrir ayuda sin romper el flujo del bucle principal del popup.
+4. Prácticas recomendadas con ayuda modal en contenido dinámico:
+   - Pausar, descartar `dt` al volver y reanudar de forma limpia para evitar inestabilidades.
+
+### API utilizada (núcleo):
+- `IniPopupDialog(Display, Style_ID)`
+- `PopupDialogWindow.step(events, dt_ms)` (loop del popup)
+- `SurfacePPsct(InteractiveContent, interactive_size=...)`
+- `PopupHELP(MarkdownText, Title=..., ...)`
+
+### Resultado observable:
+- Se ve un popup con partículas/objetos rebotando y varios controles de interacción.
+- El botón “Ayuda” abre un popup de ayuda.
+- Tras cerrar la ayuda, el contenido se reanuda sin saltos de animación ni errores de input.
+
+### Recomendación de aprendizaje (orden sugerido)
 
 1) **`demo_ask_help.py`**  
    Aprende el patrón mínimo: *overlay directo* + retorno correcto.
@@ -478,7 +556,7 @@ La demo `demo_ask_help.py` pone énfasis en esta segunda.
 
 ---
 
-## 6. Checklist de implementación (para tu propia app)
+### Checklist de implementación (para tu propia app)
 
 ### Si usas `ShowHelpOverlay()`
 - [ ] ¿Al volver se redibuja correctamente la pantalla?
@@ -495,9 +573,9 @@ La demo `demo_ask_help.py` pone énfasis en esta segunda.
 
 ---
 
-## 7. Cierre
+### Cierre
 
-Estas tres últimas demos cubren **tres niveles** de integración, de menos a más estructurado:
+Estas tres demos cubren **tres niveles** de integración, de menos a más estructurado:
 
 - Overlay directo para ayuda “rápida” y flujos simples (`ShowHelpOverlay()`).
 - Popup de ayuda integrado cuando ya usas un framework de diálogos (`PopupHELP()`).

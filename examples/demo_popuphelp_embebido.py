@@ -1,10 +1,7 @@
-#!/usr/bin/python3
-"""
-Programa asistido por ChatGPT en fecha 15/feb/2026 y hora 07:36
-Titulo: Demo PopupHELP — visor Markdown embebido como contenido interactivo
-Descripción: Demo Pygame que abre un PopupDialog con contenido interactivo y, desde él,
-             lanza PopupHELP() para mostrar una ayuda Markdown embebida (modal/bloqueante).
-"""
+# Archivo: examples/demo_popuphelp_embebido.py
+# Descripción breve: Muestra un bola rebotando y habilita una ayuda embebida  (modal/bloqueante). (Usa PopupHELP)
+# Orden tutorial: 2.2
+
 
 import time
 import pygame
@@ -17,6 +14,7 @@ from popups_dialog_gui.Popup_Dialog import (
     InteractiveContent,
 )
 
+win_title= "2.2) examples/demo_popuphelp_embebido.py"
 
 WIDTH = 1200
 HEIGHT = 800
@@ -28,7 +26,7 @@ AREA_SIZE = (WIDTH - KERNEL_MARGIN_W, HEIGHT - KERNEL_MARGIN_H)
 
 
 HELP_MD = f"""
-# Ayuda (PopupHELP embebido)
+# Ayuda (demo_popuphelp_embebido)
 
 Este popup contiene un **visor Markdown** como **contenido interactivo**.
 
@@ -195,7 +193,7 @@ def main() -> int:
     pygame.init()
 
     display = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Demo PopupHELP (visor Markdown embebido)")
+    pygame.display.set_caption(win_title)
 
     display.fill((0, 0, 15))
     pygame.display.flip()

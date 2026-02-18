@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-# examples/demo_Popup_Dialog.py
+# Archivo: examples/demo_Popup_Dialog.py
 # Descripción breve: Ofrece un amplio menú de demos de Popup_Dialog (salvo las que usan contenidos interactivos) 
-# Orden tutorial: 1.3
+# Orden tutorial: 1.2
 
 import pygame
 import time, os
@@ -12,6 +12,8 @@ from typing import Union
 from popups_dialog_gui.Popup_Dialog import IniPopupDialog, PopupNOTICE, PopupASK, PopupERR, PopupWARN, PopupINFO, \
         PopupScanFiles, PopupSelectionFiles, GetStyleDict
 from popups_dialog_gui.asset_locator import resolve_asset_layout
+
+win_title="1.2) examples/demo_Popup_Dialog.py"
 
 #####################################################################################################################
 def generar_99_ficheros():
@@ -123,7 +125,7 @@ pygame.init() # Inicializar Pygame
 ventana_ancho = 1500 # Configuración de la ventana principal de pygame
 ventana_alto = 800
 MainDisplay = pygame.display.set_mode((ventana_ancho, ventana_alto)) 
-pygame.display.set_caption("1.3) demo_Popup_Dialog.py")
+pygame.display.set_caption(win_title)
 
 print(">>>", MainDisplay.get_size())
 

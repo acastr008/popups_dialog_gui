@@ -1,6 +1,7 @@
-# examples/demo_rebota_controles.py
-# Descripción breve: Partículas rebotando con controles de teclado y de ratón (coord. relativas a rectángulo kernel).
-# Orden tutorial: 2.4
+# Archivo: examples/demo_rebota_controles.py
+# Descripción breve: Partículas rebotando con controles de teclado y de ratón (coord. relativas a rectángulo kernel) (Usa PopupHELP).
+# Orden tutorial: 2.3
+
 #
 # - LMB: añade 200 partículas en el punto del clic (valor alto para verificar la precisión).
 # - RMB: elimina 20 partículas.
@@ -24,6 +25,7 @@ from popups_dialog_gui.Popup_Dialog import (
 from popups_dialog_gui.adapters import HelpAsInteractive, run_help_popup_from_md
 from help_core_pygame import HelpViewer
 
+win_title="2.3) examples/demo_rebota_controles.py"
 
 WIDTH=1500              # Anchura de la pantalla
 HEIGTH=950              # Altura de la pantalla
@@ -196,7 +198,7 @@ if __name__ == "__main__":
     pygame.init()
     W, H = WIDTH, HEIGTH
     MainDisplay = pygame.display.set_mode((W, H))
-    pygame.display.set_caption("2.4) demo_rebota_controles.py")
+    pygame.display.set_caption(win_title)
     # Color de fondo de la ventana principal (fuera del popup)
     MainDisplay.fill((0, 0, 20))  # azul muy oscuro exterior
     pygame.display.flip()

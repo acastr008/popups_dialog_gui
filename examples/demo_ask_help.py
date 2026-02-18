@@ -1,12 +1,14 @@
-# examples/demo_ask_help.py
-# Descripción breve: Muestra un mensaje, ofrece ayuda y solicita una respuesta. (Prueba básica de Popup_Dialog.)
-# Orden tutorial: 1.2
+# Archivo: examples/demo_ask_help.py
+# Descripción breve: Muestra un mensaje, ofrece ayuda y solicita una respuesta. (Prueba básica de Popup_Dialog.) (usa ShowHelpOverlay)
+# Orden tutorial: 2.1
 
 import pygame
 import time, os
 
 from help_core_pygame import ShowHelpOverlay
 from popups_dialog_gui.Popup_Dialog import IniPopupDialog, PopupNOTICE, PopupASK
+
+win_title="2.1) examples/demo_ask_help.py"
 
 def Ayuda(main_display):
     MensAyuda="""
@@ -45,7 +47,7 @@ pygame.init() # Inicializar Pygame
 ventana_ancho = 1500 # Configuración de la ventana principal de pygame
 ventana_alto = 800
 MainDisplay = pygame.display.set_mode((ventana_ancho, ventana_alto)) 
-pygame.display.set_caption("1.2) demo_ask_help.py")
+pygame.display.set_caption(win_title)
 
 print(">>>", MainDisplay.get_size())
 

@@ -36,7 +36,7 @@ BUTTON_H = 64
 BUTTON_GAP = 10
 FONT_SIZE = 22
 DETAIL_FONT_SIZE = 24
-TITLE = f"            LANZADOR DE EJEMPLOS PARA FORM-CORE-PYGAME  ({os.path.basename(os.getcwd())}/{(os.path.basename(sys.argv[0]))})"
+TITLE = f"            LANZADOR DE EJEMPLOS PARA 'POPUPS-DIALOG-GUI'  ({os.path.basename(os.getcwd())}/{(os.path.basename(sys.argv[0]))})"
 DEMOS_DIR = "examples"
 
 BG = (18, 18, 22)

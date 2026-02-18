@@ -1,10 +1,12 @@
-# examples/demo_Popup_Surface.py
+# Archivo: examples/demo_Popup_Surface.py
 # Descripción breve: Esta demo es un ejemplo muy sencillo de demostración del funcionamiento de SurfacePPsct
-# Orden tutorial: 2.1
+# Orden tutorial: 1.3
 
 import pygame
 import time
 from popups_dialog_gui.Popup_Dialog import PopupDialogWindow, IniPopupDialog, SurfacePPsct
+
+win_title="1.3) examples/demo_Popup_Surface.py"
 
 def SampleSurface(w, h, Title):
     # Crear superficie con fondo azul oscuro y un círculo naranja
@@ -28,7 +30,7 @@ pygame.init()
 ancho, alto = 800, 800
 MainDisplay = pygame.display.set_mode((ancho, alto))
 MainDisplay.fill((30, 30, 30))
-pygame.display.set_caption("2.1) demo_Popup_Surface.py")
+pygame.display.set_caption(win_title)
 pygame.display.flip()
 time.sleep(1)
 
