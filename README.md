@@ -1,35 +1,43 @@
-# <name_project>
+# popups_dialog_gui (README.md)
 
 ![License MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
-> **Note:** [Spanish README_es.md is available](https://github.com/acastr008/help_core_pygame/blob/main/README_ES.md)
-
 ## Description
 
-**<name_project>** is a form management system for data entry within Pygame applications. It features a modular design that allows for easy expansion and the development of new container types and widgets.
+popups_dialog_gui is a **pop-up windows module** built on Pygame to generate notices, dialogs, etc.
+It also includes more advanced capabilities intended as a foundation for extending functionality (for example, help windows).
+Form support, menus, etc. will be enabled soon.
 
-The utility of some of the already developed widgets can, on its own, justify the use of this module.
+## Project status
 
-## Project Status
-
-A significant amount of functionality has been developed; however, less progress has been made regarding aesthetic aspects. These visual elements will receive much more attention in future versions.
+A considerable amount of functionality has been implemented and complemented with documentation.
+Developed and tested on Linux. It may work on other systems, but it has not been verified.
 
 ## Documentation
 
-- [Remaining documentation in English and Spanish](https://github.com/acastr008/help_core_pygame/blob/main/docs/README.md)
+- [Versión en Español de este documento](README_es.md)
+- [Remaining documentation](docs/INDEX_en.md)
+- [Full documentation on GitHub](https://github.com/acastr008/popups_dialog_gui) (currently private; it will be published soon)
 
+## Usage examples
 
-## Usage Examples
+In the project’s `examples/` directory there is a small collection of programs that demonstrate different uses of popups_dialog_gui.
+A tutorial is available that helps you learn in the most appropriate order and serves as a guide to understand the concepts introduced in each example.
 
-You can find a collection of programs demonstrating the various uses of **<name_project>** in the `examples/` directory.
+## How to run the example programs (Quickstart)
 
-## Quickstart: How to run example programs
+At the root of the project there is a launcher (`main.py`) that shows the list of available example programs along with a brief description.
 
-A launcher is available in the project's root directory that displays a list of available example programs along with brief descriptions.
+To try them on Linux you can download the launcher and the entire `examples/` directory. Make sure you have installed:
 
-To execute a program, simply select it and click with your mouse. Use the following command to start the launcher:
+- python >= 3.9
+- pygame >= 2.0
+- help-core-pygame >= 0.1.2 (auxiliary Pygame library by the same author)
+
+Command to run the launcher:
 
 ```bash
 python main.py
 ```
 
+Just select one of the examples and click with the mouse to run it.

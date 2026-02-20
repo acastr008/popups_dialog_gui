@@ -1,6 +1,6 @@
 # Tareas pendientes
 
-- Revisar documentacion relacionada con demos con opción de ventana de ayuda.
+- Se han añadido traduciones de /docs/*_es.md a la version inglesa.  EL /README_es.md no enlaza bien con el /docs/INDEX_es.md ?????
 
 - Pendiente de Ilustrar con imágenes el TUTORIAL.md
 
@@ -15,6 +15,8 @@
 - ???
 
 # Tareas ya realizadas por orden cronológico
+
+- ()
 
 - (17-feb-2026) Revisadas todas las demos, y retocadas las cabeceras y titulos de ventana pygame.
 

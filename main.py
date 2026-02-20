@@ -1,4 +1,3 @@
-#!/home/antonio/pyenv_goliat/bin/python
 # main.py
 # Lanzador de demos para popups_dialog_gui 
 """
@@ -17,10 +16,6 @@ TIPOS DE RECURSOS:
     * Recursos propios de la demo: viven dentro de la carpeta de la demo; se acceden vía Path(__file__).parent.
 """
 
-"""
-
-
-"""
 
 import os
 import sys
