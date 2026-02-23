@@ -39,6 +39,24 @@ include-package-data = true
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.package-data]
-popups_dialog_gui = ["assets/**/*.mp3"] 
 
+[tool.setuptools.package-data]
+popups_dialog_gui = [
+  "assets/**/*.png",
+  "assets/**/*.jpg",
+  "assets/**/*.jpeg",
+
+  "assets/**/*.ttf",
+
+  "assets/**/*.txt",
+  "assets/**/*.md",
+  "assets/**/*.rst",
+
+  "assets/**/*.json",
+  "assets/**/*.ini",
+  "assets/**/*.cfg",
+
+  "assets/**/*.mp3",
+  "assets/**/*.wav",
+  "assets/**/*.ogg",
+]
