@@ -1,14 +1,12 @@
 # Tareas pendientes
 
-- Se han añadido traduciones de /docs/*_es.md a la version inglesa.  EL /README_es.md no enlaza bien con el /docs/INDEX_es.md ?????
+- Repaso general antes de subir a GitHub tal cual o Incluir Formularios
 
-- Pendiente de Ilustrar con imágenes el TUTORIAL.md
+- No incluiremos formularios. (Es posible que ChessOC no necesite que los formularios estén integrados en Popups Windows)
 
-- READMEs
+- Añadir juegos y simulaciones a GitHub (Aterrizaje Lunar, Péndulos, etc.)
 
-- pyproject.toml
-
-- Subir la primera version a GitHub
+- Desatascar ChessOC.
 
 # Mejoras pendientes a más largo plazo
 
@@ -16,7 +14,9 @@
 
 # Tareas ya realizadas por orden cronológico
 
-- ()
+- (20-feb-2026) Más correcciones de documentos (incluidos los README): se hacen más traducciones y corrigen enlaces entre ellos. 
+
+- (19-feb-2026) Se han añadido traduciones de /docs/*_es.md a la version inglesa. EL /README_es.md no enlaza bien con el /docs/INDEX_es.md
 
 - (17-feb-2026) Revisadas todas las demos, y retocadas las cabeceras y titulos de ventana pygame.
 

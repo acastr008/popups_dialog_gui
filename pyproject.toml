@@ -32,6 +32,10 @@ Homepage = "https://github.com/acastr008/popups_dialog_gui"
 Source = "https://github.com/acastr008/popups_dialog_gui"
 Issues = "https://github.com/acastr008/popups_dialog_gui/issues" # Pagina donde GitHub gestiona el seguimiento de errores y mejoras.
 
+
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
