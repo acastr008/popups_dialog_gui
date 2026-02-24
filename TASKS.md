@@ -14,6 +14,8 @@
 
 # Tareas ya realizadas por orden cronológico
 
+- (24-feg-2026) Texto añadido en OVERVIEW_e(s/n).md mejoras en tools/diagnose_up2_pypi.py
+
 - (20-feb-2026) Más correcciones de documentos (incluidos los README): se hacen más traducciones y corrigen enlaces entre ellos. 
 
 - (19-feb-2026) Se han añadido traduciones de /docs/*_es.md a la version inglesa. EL /README_es.md no enlaza bien con el /docs/INDEX_es.md

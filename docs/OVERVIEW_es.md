@@ -6,13 +6,15 @@
 
 Es un **módulo de ventanas emergentes** (pop-up) usando Pygame para  generar  avisos, diálogos, etc.,  y tambien algunas posibilidades más avanzadas. Está basada en Pygame. 
 
-No se trata de emular un toolkit completo para GUI del tipo TkInter, o un GTK, ni nada parecido. 
-Lo que se intenta es ofrecer algunas funcionalidades básicas tipo graphical user interface (GUI) siempre usando PyGame como base, porque no siempre los GUIs avanzados combinan bien con otros entornos gráficos. 
+No se trata de emular un toolkit completo para GUI del tipo TkInter, o un GTK, ni nada parecido. Lo que se intenta es ofrecer algunas funcionalidades básicas tipo graphical user interface (GUI) siempre usando PyGame como base, porque no siempre los GUIs avanzados combinan bien con otros entornos gráficos. 
 
-Esto ocurre  con Pygame y generalmente se debe a que  comparten mal la gestión de eventos y ciertos recursos gráficos del sistema a bajo nivel. 
-La propuesta de popups_dialog_gui es servir de complemento para dotar a Pygame de una serie de funcionalidades  que no se incluyen en Pygame, y que vienen muy bien para muchos programas en esta plataforma.
-Aparte de algunas funcionalidades básicas para una serie de ventanasa estandarizadas de uso frecuent, se han proporcionado algunas opciones más avanzadas que permiten usar contenidos interactivos embebibles.
-Para ello fue necesario incluir un par de módulos adicionales que se detallan a continuación. 
+Esto ocurre  con Pygame y generalmente se debe a que  comparten mal la gestión de eventos y ciertos recursos gráficos del sistema a bajo nivel. Cuando intentas mezclar por ejemplo PySide6 o Tkinter con Pygame, ambos frameworks tratan de controlar el bucle de eventos (la lectura de ratón, teclado y actualización de ventana). SDL2, usado por Pygame, coloca sus eventos en su propia cola; Qt o Tkinter hacen lo mismo en la suya. Si arrancas dos “main loops” en el mismo proceso pueden quedar eventos sin procesar o ventanas que no cierran correctamente, y a veces subprocesos SDL2 siguen abiertos porque quedaron referenciados en estructuras internas de C. 
+
+SDL2 te ofrece una API multiplataforma (Linux, Windows, macOS, incluso consolas o móviles) para crear ventanas, dibujar píxeles o texturas en pantalla, reproducir sonido y capturar eventos de entrada. Pygame no reimplementa todo eso en Python, sino que lo envuelve (bindings) sobre SDL2, de modo que tú trabajas con clases y funciones Python pero el motor real corre en C/C++.
+
+La propuesta de popups_dialog_gui es servir de complemento para dotar a Pygame de una serie de funcionalidades  que no se incluyen en Pygame, y que vienen muy bien para muchos programas en esta plataforma. Hay varias librerías Python con el mismo propósito pero con enfoques diferentes. Pueden ser complementarias en su uso.
+
+Aparte de algunas funcionalidades básicas para una serie de ventanas estandarizadas de uso frecuent, se han proporcionado algunas opciones más avanzadas que permiten usar contenidos interactivos embebibles. Para ello fue necesario incluir un par de módulos adicionales que se detallan a continuación. 
 
 ### Interactive_content.py
 
@@ -41,9 +43,7 @@ Estas ventanas pop-up tienen tres secciones dispuestas verticalmente y hacen uso
 1. La sección superior para el título o para indicar el tipo de mensaje.
 2. La siguiente es una sección central que dará cabida al texto del mensaje o a otro tipo de contenidos 
 3. Finalmente existira una sección inferior con uno o más botones.
-   
+
 ## La mejor forma de aprender a usar popups_dialog_gui es consultar las demos
 
 Lo mejor es acudir a nuestro [TUTORIAL_es.md](TUTORIAL_es.md) que nos ayuda a transitar por una serie de tutoriales para practicar con una vaierdad de ejemplos explicando su uso y su funcionamiento.
-
- 

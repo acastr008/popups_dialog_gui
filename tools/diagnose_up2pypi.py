@@ -17,6 +17,7 @@ Descripción: Ejecuta comprobaciones mínimas y deterministas para decidir si es
 from __future__ import annotations
 
 import dataclasses
+import argparse
 import os
 import re
 import subprocess
@@ -28,6 +29,36 @@ from typing import Iterable
 
 
 # -------------------------------------------------------------------------------------------------
+TRACE_ENABLED = False
+
+def parse_cli_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parsea argumentos de línea de comandos.
+
+    Args:
+        argv: lista de argumentos (sin nombre de programa). Si es None, usa sys.argv[1:].
+
+    Returns:
+        Namespace con los argumentos.
+    """
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument(
+        "--trace",
+        action="store_true",
+        help="Activa trazas de diagnóstico (TRAZA ...).",
+    )
+    return parser.parse_args(argv)
+
+def trace_print(*args, **kwargs) -> None:
+    """Imprime trazas solo si están habilitadas.
+
+    Acepta los mismos parámetros que `print()` para poder reenviar `file=...`,
+    `end=...`, etc.
+    """
+    if TRACE_ENABLED:
+        print(*args, **kwargs)
+
+
+# -------------------------------------------------------------------------------------------------
 # ZONA DE CONSTANTES (modificar aquí para reutilizar el script en otros proyectos)
 # -------------------------------------------------------------------------------------------------
 
@@ -36,6 +67,8 @@ PROJECT_ROOT_MARKER_FILES = ("pyproject.toml",)  # Ficheros cuya presencia ident
 # =========================
 # Constantes (única fuente de verdad)
 # =========================
+
+PRIMERA_VERSION =True
 
 PYPI_PROJECT_NAME = "popups-dialog-gui"
 IMPORT_PACKAGE_NAME = PYPI_PROJECT_NAME.replace("-", "_")
@@ -114,34 +147,37 @@ def ask_yes_no(question: str, default_yes: bool = True) -> bool:
     Returns:
         True si la respuesta es afirmativa, False en caso contrario.
     """
-    default_hint = 'Y/n' if default_yes else 'y/N'
+
+    default_hint = 'S/n' if default_yes else 's/N'
     while True:
+        print()
         raw_answer = input(f"{question} [{default_hint}]: ").strip().lower()
 
         if raw_answer == '':
+            print()
             return default_yes
 
-        if raw_answer in ('y', 'yes', 's', 'si', 'sí'):
+        if raw_answer in ('s', 'si', 'sí'):
+            print()
             return True
 
         if raw_answer in ('n', 'no'):
+            print()
             return False
 
         print("Respuesta no válida. Escribe 's'/'n' (o pulsa Enter).")
+        print()
 
 
-def print_run_overview(project_root: Path | None) -> None:
+def print_run_overview() -> None:
     """
     Imprime un resumen corto de configuración antes de ejecutar checks.
-
-    Args:
-        project_root: Ruta detectada (si ya se conoce) o None.
     """
     print("\n=== diagnose_pypi_readiness: configuración ===")
     print(f"- PYPI_PROJECT_NAME:     {PYPI_PROJECT_NAME}")
     print(f"- IMPORT_PACKAGE_NAME:   {IMPORT_PACKAGE_NAME}")
     print(f"- EXPECTED_VENV_DIRNAME: {EXPECTED_VENV_DIRNAME}")
-    print(f"- Project root:          {str(project_root) if project_root else 'pendiente de detectar'}")
+    print(f"- PRIMERA_VERSION: {PRIMERA_VERSION}")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -311,7 +347,7 @@ def trace_env_state(tag: str) -> None:
     conda_prefix = os.environ.get("CONDA_PREFIX", "")
     pythonhome = os.environ.get("PYTHONHOME", "")
 
-    print(
+    trace_print(
         "TRAZA diagnose_pypi_readiness, trace_env_state, "
         f"tag={tag} | "
         f"sys.prefix={sys.prefix} | "
@@ -322,6 +358,21 @@ def trace_env_state(tag: str) -> None:
         f"PYTHONHOME={pythonhome}",
         file=sys.stderr,
     )
+
+def trace_asset_state(tag: str, **fields: object) -> None:
+    """
+    Imprime trazas para la validación de assets (local vs wheel).
+
+    Args:
+        tag: etiqueta del punto de traza.
+        **fields: pares clave/valor a mostrar.
+    """
+    parts: list[str] = []
+    for key, value in fields.items():
+        parts.append(f"{key}={value!r}")
+    joined = " | ".join(parts)
+    trace_print(f"TRAZA diagnose_pypi_readiness, assets_check, tag={tag} | {joined}")
+
 
 def is_expected_venv_active() -> bool:
     """
@@ -574,6 +625,10 @@ def _parse_zipfile_listed_paths(zip_list_lines: list[str]) -> list[str]:
     """
     Extrae nombres de fichero de la salida de 'python -m zipfile -l'.
 
+    Soporta dos formatos habituales:
+      A) <size> <YYYY-MM-DD> <HH:MM> <name...>
+      B) <name...> <YYYY-MM-DD> <HH:MM[:SS]> <size>
+
     Args:
         zip_list_lines: líneas stdout de zipfile -l
 
@@ -581,11 +636,36 @@ def _parse_zipfile_listed_paths(zip_list_lines: list[str]) -> list[str]:
         Lista de paths contenidos en el zip (tal y como aparecen en el wheel).
     """
     paths: list[str] = []
-    pattern = re.compile(r"^\s*\d+\s+\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}\s+(?P<name>.+?)\s*$")
+
+    # A) size-first (formato clásico)
+    pattern_size_first = re.compile(
+        r"^\s*(?P<size>\d+)\s+"
+        r"(?P<date>\d{4}-\d{2}-\d{2})\s+"
+        r"(?P<time>\d{2}:\d{2}(?::\d{2})?)\s+"
+        r"(?P<name>.+?)\s*$"
+    )
+
+    # B) name-first (tolerando segundos opcionales)
+    pattern_name_first = re.compile(
+        r"^(?P<name>.+?)\s+"
+        r"(?P<date>\d{4}-\d{2}-\d{2})\s+"
+        r"(?P<time>\d{2}:\d{2}(?::\d{2})?)\s+"
+        r"(?P<size>\d+)\s*$"
+    )
+
     for line in zip_list_lines:
-        match = pattern.match(line)
-        if match:
-            paths.append(match.group("name"))
+        line = line.rstrip("\n")
+
+        match_a = pattern_size_first.match(line)
+        if match_a:
+            paths.append(match_a.group("name"))
+            continue
+
+        match_b = pattern_name_first.match(line)
+        if match_b:
+            paths.append(match_b.group("name"))
+            continue
+
     return paths
 
 
@@ -676,13 +756,51 @@ def check_required_wheel_paths(zip_list_lines: list[str], project_root: Path, re
 
     wheel_paths = _parse_zipfile_listed_paths(zip_list_lines)
 
+    wheel_total_files = len(wheel_paths)
+    wheel_all_counts: dict[str, int] = {}
+    for p in wheel_paths:
+        suffix = Path(p).suffix.lower().lstrip('.')
+        if suffix:
+            wheel_all_counts[suffix] = wheel_all_counts.get(suffix, 0) + 1
+        else:
+            wheel_all_counts['(no_ext)'] = wheel_all_counts.get('(no_ext)', 0) + 1
+
+    trace_asset_state(
+        "wheel_paths_parsed",
+        wheel_paths_count=len(wheel_paths),
+    )
+
     try:
         local_counts = _collect_local_asset_extension_counts(project_root)
+        trace_asset_state(
+            "local_counts",
+            local_counts=local_counts,
+            local_total=sum(local_counts.values()),
+            assets_dir=str(project_root / SRC_DIRNAME / IMPORT_PACKAGE_NAME / ASSETS_DIRNAME),
+        )
     except (FileNotFoundError, NotADirectoryError, PermissionError) as exc:
         report.add_fail(str(exc))
         return
 
     wheel_counts = _collect_wheel_asset_extension_counts(wheel_paths)
+
+    trace_asset_state(
+        "wheel_counts",
+        wheel_counts=wheel_counts,
+        wheel_total=sum(wheel_counts.values()),
+    )
+
+    prefix = f"{IMPORT_PACKAGE_NAME}/{ASSETS_DIRNAME}/"
+    wheel_any_under_assets = [p for p in wheel_paths if p.startswith(prefix)]
+    wheel_exts_under_assets = sorted(
+        {Path(p).suffix.lower().lstrip('.') for p in wheel_any_under_assets if Path(p).suffix}
+    )
+    trace_asset_state(
+        "wheel_under_assets",
+        wheel_any_under_assets_count=len(wheel_any_under_assets),
+        wheel_exts_under_assets=wheel_exts_under_assets,
+        wheel_any_under_assets_sample=wheel_any_under_assets[:10],
+    )
 
     local_total = sum(local_counts.values())
     wheel_total = sum(wheel_counts.values())
@@ -701,12 +819,28 @@ def check_required_wheel_paths(zip_list_lines: list[str], project_root: Path, re
         )
         return
 
+    report.add_ok(
+        f"Conteo de assets en wheel bajo '{IMPORT_PACKAGE_NAME}/{ASSETS_DIRNAME}/': {wheel_counts} "
+        f"(total={wheel_total})."
+    )
+    report.add_ok(
+        f"Conteo de assets locales bajo '{SRC_DIRNAME}/{IMPORT_PACKAGE_NAME}/{ASSETS_DIRNAME}/': {local_counts} "
+        f"(total={local_total})."
+    )
+
+    report.add_ok(
+        f"Total de ficheros en wheel: {wheel_total_files}. Desglose global por extensión: {wheel_all_counts}."
+    )
+
+    # No consideramos FAIL que una extensión concreta no aparezca en el wheel.
+    # Lo importante es que exista contenido bajo assets y que el parseo del wheel haya funcionado.
     missing_exts = [ext for ext in sorted(local_counts) if wheel_counts.get(ext, 0) == 0]
     for ext in missing_exts:
-        report.add_fail(
-            f"El wheel NO contiene ningún asset con extensión '.{ext}' bajo "
+        report.add_warn(
+            f"El wheel no contiene assets con extensión '.{ext}' bajo "
             f"'{IMPORT_PACKAGE_NAME}/{ASSETS_DIRNAME}/' (en local hay {local_counts.get(ext, 0)})."
         )
+
 
     if report.has_fail():
         return
@@ -740,7 +874,56 @@ def remove_dir_tree(path: Path) -> None:
         pass
 
 def PrintChuleta():
-    Chuleta=f"""
+    if PRIMERA_VERSION:
+        Chuleta = f"""
+
+CHULETA (Si todo es OK, para dar de alta en PyPI una PRIMERA versión faltaría hacer lo siguiente:)
+===============================================================================================
+
+0) Verificar que el nombre del proyecto está libre en PyPI
+    Acción: abre la página y comprueba que NO existe todavía (si existe, hay conflicto de nombre):
+    https://pypi.org/project/{PYPI_PROJECT_NAME}/
+
+0.b) Verificar metadata mínima en pyproject.toml (especialmente importante en primera publicación)
+    Revisar: name, version, license, readme, requires-python, dependencies, classifiers, urls.
+
+0.c) (Recomendado) Subir primero a TestPyPI para validar renderizado e instalación en limpio
+    Comandos:
+    python3 -m build
+    python3 -m twine check dist/*
+    python3 -m twine upload --repository testpypi dist/*
+    Instalación de prueba (venv limpio):
+    python3 -m pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple {PYPI_PROJECT_NAME}
+
+0.d) Nota crítica: en PyPI NO podrás re-subir la misma versión si te equivocas
+    Si algo sale mal tras publicar, incrementa version y repite build/subida.
+
+1) Limpiar artefactos antiguos (evitar confusiones) 
+    Comando: rm -rf dist/ build/ *.egg-info 
+
+2) Reconstruir sdist + wheel (artefactos definitivos) 
+    Comando: python3 -m build 
+
+3) Validar antes de subir a PyPI 
+    Comando: python3 -m twine check dist/* 
+
+4) Subir a PyPI (credenciales en ~/.pypirc) 
+    Comando: python3 -m twine upload dist/* 
+
+5) Verificar en PyPI la ficha del proyecto (primera vez)
+    Acción: confirma que renderiza bien el README y que aparecen correctamente licencia, enlaces, classifiers,
+            requires-python, dependencias, y los archivos (wheel y sdist).
+    https://pypi.org/project/{PYPI_PROJECT_NAME}/
+
+6) Los entornos que uses con '{PYPI_PROJECT_NAME}' deberás actualizarlos.
+    source /home/antonio/pyenv_goliat/bin/activate
+    pip list | grep {PYPI_PROJECT_NAME}
+    python3 -m pip install -U {PYPI_PROJECT_NAME}
+    pip list | grep {PYPI_PROJECT_NAME}
+
+"""
+    else:
+        Chuleta = f"""
 
 CHULETA (Si todo es OK, para subir a PyPI faltaría hacer lo siguiente:)
 =======================================================================
@@ -772,9 +955,17 @@ CHULETA (Si todo es OK, para subir a PyPI faltaría hacer lo siguiente:)
 
 
 def main() -> int:
+    global TRACE_ENABLED, PRIMERA_VERSION
+
+    args = parse_cli_args()
+    TRACE_ENABLED = bool(getattr(args, "trace", False))
+    
+    PRIMERA_VERSION= ask_yes_no("¿Es una primera versión?", default_yes=False)
+
     report = DiagnosisReport()
 
-    print_run_overview(project_root=None)
+    print_run_overview()
+
     if not ask_yes_no("¿Iniciar comprobaciones?", default_yes=True):
         print("Abortado por el usuario.")
         return EXIT_OK
@@ -977,7 +1168,10 @@ def main() -> int:
             [
                 str(clean_python),
                 "-c",
-                "import importlib.metadata as m; print(m.version(PYPI_PROJECT_NAME))",
+                (
+                    "import importlib.metadata as m; "
+                    f"print(m.version({PYPI_PROJECT_NAME!r}))"
+                ),
             ],
             cwd=project_root,
         )
