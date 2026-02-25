@@ -122,7 +122,7 @@ REQUIRED_WHEEL_PATH_SUBSTRINGS = (
 )
 
 # Directorio temporal para venv de instalación limpia
-CLEAN_VENV_DIR = Path("/tmp/venv_pypi_check")
+CLEAN_VENV_DIR = Path("/tmp/TMP_ENV_pypi_check")
 
 # Códigos de retorno (pensados para uso en CI/scripts)
 EXIT_OK = 0
@@ -476,6 +476,25 @@ def read_local_version_from_pyproject(pyproject_path: Path) -> str:
     return version.strip()
 
 
+
+
+def read_committed_version_from_pyproject(project_root: Path) -> str | None:
+    """
+    Lee la versión del pyproject.toml tal y como está en HEAD (último commit).
+
+    Returns:
+        La versión en HEAD, o None si no se puede obtener.
+    """
+    try:
+        proc = run_command(["git", "show", "HEAD:pyproject.toml"], cwd=project_root)
+    except subprocess.CalledProcessError:
+        return None
+
+    # Reutilizamos el mismo parseo que para el fichero local, pero sobre el contenido en memoria.
+    match = re.search(r'^version\s*=\s*"([^"]+)"\s*$', proc.stdout, flags=re.MULTILINE)
+    if not match:
+        return None
+    return match.group(1)
 def version_to_tuple(version_str: str) -> tuple[int, ...]:
     """
     Convierte una versión tipo 'X.Y.Z' a tupla de enteros.
@@ -873,7 +892,42 @@ def remove_dir_tree(path: Path) -> None:
     except OSError:
         pass
 
+
+def print_environment_warnings(package_name: str) -> None:
+    """
+    Imprime avisos si detecta que el entorno actual puede sesgar pruebas de instalación.
+
+    - Si hay un venv activo (VIRTUAL_ENV definido), lo muestra como WARN.
+    - Si el paquete aparece instalado en modo editable, lo avisa como WARN.
+
+    Esto evita que una "instalación de prueba" se haga accidentalmente en un venv de desarrollo
+    o que se confunda una instalación editable con una instalación real desde PyPI/TestPyPI.
+    """
+    virtual_env = os.environ.get("VIRTUAL_ENV")
+    if virtual_env:
+        print(f"WARN: Hay un venv activo (VIRTUAL_ENV={virtual_env}). "
+              "Asegúrate de que es el entorno correcto para cualquier 'pip install'.")
+
+    try:
+        completed = subprocess.run(
+            [sys.executable, "-m", "pip", "show", package_name],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        return
+
+    stdout = completed.stdout or ""
+    if "Editable project location" in stdout:
+        print("WARN: Se ha detectado una instalación EDITABLE del paquete "
+              f"'{package_name}' en el entorno actual.")
+        print("      En este caso, una 'instalación de prueba' NO valida lo publicado en PyPI/TestPyPI.")
+        print("      Solución: crea/activa un venv limpio y repite la instalación ahí.")
+
+
 def PrintChuleta():
+    print_environment_warnings(PYPI_PROJECT_NAME)
     if PRIMERA_VERSION:
         Chuleta = f"""
 
@@ -892,8 +946,14 @@ CHULETA (Si todo es OK, para dar de alta en PyPI una PRIMERA versión faltaría 
     python3 -m build
     python3 -m twine check dist/*
     python3 -m twine upload --repository testpypi dist/*
-    Instalación de prueba (venv limpio):
-    python3 -m pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple {PYPI_PROJECT_NAME}
+
+    Instalación de prueba (OBLIGATORIO en venv limpio; no usar tu venv de desarrollo):
+    # 1) Salir del venv de desarrollo si está activo (opcional, pero evita confusiones)
+    deactivate 2>/dev/null || true
+
+    # 2) Crear y activar un venv NUEVO (limpio)
+    # 2) Ejecutar la prueba en un SUBSHELL para que el venv temporal no pueda quedar activo en tu terminal
+    bash -lc 'python3 -m venv /tmp/TMP_ENV_testpypi_{PYPI_PROJECT_NAME} && source /tmp/TMP_ENV_testpypi_{PYPI_PROJECT_NAME}/bin/activate && python -m pip install -U pip && python -m pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple {PYPI_PROJECT_NAME} && python -m pip show {PYPI_PROJECT_NAME}'
 
 0.d) Nota crítica: en PyPI NO podrás re-subir la misma versión si te equivocas
     Si algo sale mal tras publicar, incrementa version y repite build/subida.
@@ -1017,9 +1077,31 @@ def main() -> int:
         warn = [p for p in changed_paths if p not in fatal]
 
         for p in fatal:
-            report.add_fail(f"Cambio fatal detectado (no continuar): {p}")
+            if p == "pyproject.toml":
+                local_version_now = read_local_version_from_pyproject(project_root / "pyproject.toml")
+                committed_version = read_committed_version_from_pyproject(project_root)
+                if committed_version:
+                    report.add_fail(
+                        "Versiones dispares detectadas: "
+                        f"Versión pyproject.toml= {local_version_now}  "
+                        f"Versión en Git (HEAD)=  {committed_version}. "
+                        "pyproject.toml está modificado sin commit; haz commit del bump de versión o revierte el cambio."
+                    )
+                else:
+                    report.add_fail(
+                        f"Cambio fatal detectado: pyproject.toml está modificado sin commit (versión actual: {local_version_now}). "
+                        "Haz commit del cambio o revierte el fichero."
+                    )
+            else:
+                report.add_fail(
+                    f"Cambio fatal detectado en ruta marcada como fatal: {p}. "
+                    "Haz commit o revierte los cambios antes de continuar."
+                )
         for p in warn:
-            report.add_warn(f"Cambio fuera de zona fatal (aviso): {p}")
+            report.add_warn(
+                f"Cambio en ruta NO fatal (aviso): {p}. "
+                "Puedes continuar, pero revisa si el cambio es intencional."
+            )
 
         # Si ya hay FAIL por cambios fatales, paramos aquí (según tu política).
         if report.has_fail():
@@ -1138,30 +1220,26 @@ def main() -> int:
     report.add_ok("Wheel contiene las rutas críticas esperadas.")
 
     # 8) Instalación limpia y lectura de versión instalada (metadata)
+    #    Nota: este venv es TEMPORAL. Se elimina siempre al finalizar este bloque para evitar confusiones.
     remove_dir_tree(CLEAN_VENV_DIR)
     try:
         run_command([sys.executable, "-m", "venv", str(CLEAN_VENV_DIR)], cwd=project_root)
-    except subprocess.CalledProcessError as exc:
-        report.add_fail(f"No se pudo crear venv limpio en {CLEAN_VENV_DIR}: {exc.stderr.strip() or exc.stdout.strip()}")
-        report.print()
-        return report.exit_code()
 
-    clean_python = CLEAN_VENV_DIR / "bin" / "python"
-    if not clean_python.exists():
-        report.add_fail(f"No existe el intérprete esperado del venv limpio: {clean_python}")
-        report.print()
-        return report.exit_code()
+        clean_python = CLEAN_VENV_DIR / "bin" / "python"
+        if not clean_python.exists():
+            report.add_fail(f"No existe el intérprete esperado del venv limpio: {clean_python}")
+            report.print()
+            return report.exit_code()
 
-    dist_dir = project_root / "dist"
-    wheel_files = sorted(dist_dir.glob("*.whl"))
-    if not wheel_files:
-        report.add_fail("No hay wheel en dist/ para instalar en el venv limpio.")
-        report.print()
-        return report.exit_code()
+        dist_dir = project_root / "dist"
+        wheel_files = sorted(dist_dir.glob("*.whl"))
+        if not wheel_files:
+            report.add_fail("No hay wheel en dist/ para instalar en el venv limpio.")
+            report.print()
+            return report.exit_code()
 
-    wheel_path = wheel_files[-1]
+        wheel_path = wheel_files[-1]
 
-    try:
         run_command([str(clean_python), "-m", "pip", "install", "-U", "pip"], cwd=project_root)
         run_command([str(clean_python), "-m", "pip", "install", str(wheel_path)], cwd=project_root)
         proc = run_command(
@@ -1190,6 +1268,8 @@ def main() -> int:
         report.add_fail(f"Fallo en instalación limpia o lectura de versión: {exc.stderr.strip() or exc.stdout.strip()}")
         report.print()
         return report.exit_code()
+    finally:
+        remove_dir_tree(CLEAN_VENV_DIR)
 
     report.print()
 
