@@ -14,7 +14,9 @@
 
 # Tareas ya realizadas por orden cronológico
 
-- (24-feg-2026) Texto añadido en OVERVIEW_e(s/n).md mejoras en tools/diagnose_up2_pypi.py
+- (26-feb-2026) mejoras en tools/diagnose_up2_pypi.py. Subida la versión 0.1.1 a PyPI.
+
+- (24-feb-2026) Texto añadido en OVERVIEW_e(s/n).md mejoras en tools/diagnose_up2_pypi.py
 
 - (20-feb-2026) Más correcciones de documentos (incluidos los README): se hacen más traducciones y corrigen enlaces entre ellos. 
 

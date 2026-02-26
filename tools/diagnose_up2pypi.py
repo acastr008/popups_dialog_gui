@@ -893,6 +893,7 @@ def remove_dir_tree(path: Path) -> None:
         pass
 
 
+
 def print_environment_warnings(package_name: str) -> None:
     """
     Imprime avisos si detecta que el entorno actual puede sesgar pruebas de instalación.
@@ -926,90 +927,108 @@ def print_environment_warnings(package_name: str) -> None:
         print("      Solución: crea/activa un venv limpio y repite la instalación ahí.")
 
 
-def PrintChuleta():
+
+def PrintChuleta() -> None:
     print_environment_warnings(PYPI_PROJECT_NAME)
+
+    common_update_env = f"""
+3) Actualizar entornos que usen '{PYPI_PROJECT_NAME}'
+    source /home/antonio/pyenv_goliat/bin/activate      # Activar el entorno que quieres actualizar (ej: pyenv_goliat)
+    pip list | grep {PYPI_PROJECT_NAME}                 # Ver si está instalado y qué versión hay (si no sale nada, no está instalado)
+    python3 -m pip install -U {PYPI_PROJECT_NAME}       # Actualizar a la última versión disponible en PyPI
+    pip list | grep {PYPI_PROJECT_NAME}                 # Confirmar que ahora aparece la versión nueva instalada
+"""
+
+    common_publish_steps = """
+1) Limpiar artefactos antiguos (evitar confusiones)
+    rm -rf dist/ build/ *.egg-info
+
+2) Reconstruir sdist + wheel (artefactos definitivos)
+    python3 -m build
+
+3) Validar antes de subir
+    python3 -m twine check dist/*
+
+    (Continuar con 4) SOLO si: en TestPyPI la instalación limpia imprime "import OK"
+
+4) Subir a PyPI (PRODUCCIÓN) (credenciales en ~/.pypirc)
+    python3 -m twine upload dist/*
+"""
+
+    Make_pyenv_pru_production="""
+    Crear un entorno solo para primeras pruebas en producción y para subir paquetes a TestPyPI o a PyPI
+    # Para producción como última versión estable se usará pyenv_goliat (u otro entorno).
+    # Este entorno puede borrarse cuando terminen las primeras pruebas y se haya publicado correctamente.
+    deactivate 2>/dev/null || true
+    rm -rf ~/pyenv_pru_production
+    python3 -m venv ~/pyenv_pru_production
+    source ~/pyenv_pru_production/bin/activate
+    python -m pip install -U pip
+    python -m pip install -U setuptools      # (opcional) soporte para sdist si hiciera falta
+    python -m pip install -U wheel           # (opcional) soporte para sdist si hiciera falta
+    python -m pip install -U build           # necesario para python -m build
+    python -m pip install -U twine           # necesario para python -m twine upload/check
+"""
+
     if PRIMERA_VERSION:
         Chuleta = f"""
 
 CHULETA (Si todo es OK, para dar de alta en PyPI una PRIMERA versión faltaría hacer lo siguiente:)
 ===============================================================================================
 
-0) Verificar que el nombre del proyecto está libre en PyPI
-    Acción: abre la página y comprueba que NO existe todavía (si existe, hay conflicto de nombre):
+0) Verificar que el nombre del proyecto está libre en PyPI (PRODUCCIÓN)
     https://pypi.org/project/{PYPI_PROJECT_NAME}/
 
 0.b) Verificar metadata mínima en pyproject.toml (especialmente importante en primera publicación)
     Revisar: name, version, license, readme, requires-python, dependencies, classifiers, urls.
 
-0.c) (Recomendado) Subir primero a TestPyPI para validar renderizado e instalación en limpio
-    Comandos:
-    python3 -m build
-    python3 -m twine check dist/*
-    python3 -m twine upload --repository testpypi dist/*
+0.c) Subir SIEMPRE primero a TestPyPI (obligatorio en primera publicación)
+    (Evita “quemar” una versión en PyPI con un README mal renderizado o un paquete mal construido)
 
-    Instalación de prueba (OBLIGATORIO en venv limpio; no usar tu venv de desarrollo):
-    # 1) Salir del venv de desarrollo si está activo (opcional, pero evita confusiones)
-    deactivate 2>/dev/null || true
+0.d) Nota crítica (PyPI): no podrás re-subir la misma versión si te equivocas
+    Si algo sale mal tras publicar en PyPI, incrementa version y repite build/subida.
 
-    # 2) Crear y activar un venv NUEVO (limpio)
-    # 2) Ejecutar la prueba en un SUBSHELL para que el venv temporal no pueda quedar activo en tu terminal
-    bash -lc 'python3 -m venv /tmp/TMP_ENV_testpypi_{PYPI_PROJECT_NAME} && source /tmp/TMP_ENV_testpypi_{PYPI_PROJECT_NAME}/bin/activate && python -m pip install -U pip && python -m pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple {PYPI_PROJECT_NAME} && python -m pip show {PYPI_PROJECT_NAME}'
+0.e) {Make_pyenv_pru_production}
 
-0.d) Nota crítica: en PyPI NO podrás re-subir la misma versión si te equivocas
-    Si algo sale mal tras publicar, incrementa version y repite build/subida.
+    # Build + check + upload a TestPyPI
+    rm -rf dist/ build/ *.egg-info                          # Limpiar artefactos antiguos
+    python3 -m build                                        # Reconstruir sdist + wheel
+    python3 -m twine check dist/*                           # Validar antes de subir a TestPyPI
+    python3 -m twine upload --repository testpypi dist/*    # Upload a TestPyPI
 
-1) Limpiar artefactos antiguos (evitar confusiones) 
-    Comando: rm -rf dist/ build/ *.egg-info 
+    # Instalación de prueba desde TestPyPI en un entorno LIMPIO (subshell; no puede quedar activo en tu terminal)
+    bash -lc 'python3 -m venv /tmp/TMP_ENV_testpypi_{PYPI_PROJECT_NAME} && \
+              source /tmp/TMP_ENV_testpypi_{PYPI_PROJECT_NAME}/bin/activate && \
+              python -m pip install -U pip && \
+              python -m pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple {PYPI_PROJECT_NAME} && \
+              python -m pip show {PYPI_PROJECT_NAME} && \
+              python -c "import popups_dialog_gui; print(\\"import OK\\")"'
 
-2) Reconstruir sdist + wheel (artefactos definitivos) 
-    Comando: python3 -m build 
-
-3) Validar antes de subir a PyPI 
-    Comando: python3 -m twine check dist/* 
-
-4) Subir a PyPI (credenciales en ~/.pypirc) 
-    Comando: python3 -m twine upload dist/* 
-
+{common_publish_steps}
 5) Verificar en PyPI la ficha del proyecto (primera vez)
-    Acción: confirma que renderiza bien el README y que aparecen correctamente licencia, enlaces, classifiers,
-            requires-python, dependencias, y los archivos (wheel y sdist).
+    Acción: confirma README, licencia, enlaces, classifiers, requires-python, dependencias, y archivos (wheel/sdist).
     https://pypi.org/project/{PYPI_PROJECT_NAME}/
-
-6) Los entornos que uses con '{PYPI_PROJECT_NAME}' deberás actualizarlos.
-    source /home/antonio/pyenv_goliat/bin/activate
-    pip list | grep {PYPI_PROJECT_NAME}
-    python3 -m pip install -U {PYPI_PROJECT_NAME}
-    pip list | grep {PYPI_PROJECT_NAME}
-
+{common_update_env}
 """
     else:
         Chuleta = f"""
 
-CHULETA (Si todo es OK, para subir a PyPI faltaría hacer lo siguiente:)
-=======================================================================
+CHULETA (Si todo es OK, para subir una NUEVA versión a PyPI faltaría hacer lo siguiente:)
+======================================================================================
 
-1) Limpiar artefactos antiguos (evitar confusiones) 
-    Comando: rm -rf dist/ build/ *.egg-info 
+0) {Make_pyenv_pru_production}
 
-2) Reconstruir sdist + wheel (artefactos definitivos) 
-    Comando: python3 -m build 
+1) Subir a PyPI (PRODUCCIÓN)
+    # Seguimos en ~/pyenv_pru_production (entorno temporal limpio)
+    rm -rf dist/ build/ *.egg-info  # Limpiar artefactos antiguos
+    python3 -m build                # Reconstruir sdist + wheel
+    python3 -m twine check dist/*   # Validar antes de subir a PyPI
+    python3 -m twine upload dist/*  # Upload a PyPI
 
-3) Validar antes de subir a PyPI 
-    Comando: python3 -m twine check dist/* 
-
-4) Subir a PyPI (credenciales en ~/.pypirc) 
-    Comando: python3 -m twine upload dist/* 
-
-5) Verificar en PyPI que aparece la nueva versión 
-    Acción: abre la página del proyecto y confirma que “Latest version” es la nueva y que el README
+2) Verificar en PyPI que aparece la nueva versión
     https://pypi.org/project/{PYPI_PROJECT_NAME}/
 
-6) Los entornos que uses con '{PYPI_PROJECT_NAME}' deberás actualizarlos.
-    source /home/antonio/pyenv_goliat/bin/activate
-    pip list | grep {PYPI_PROJECT_NAME}
-    python3 -m pip install -U {PYPI_PROJECT_NAME}
-    pip list | grep {PYPI_PROJECT_NAME}
-
+{common_update_env}
 """
     print(Chuleta)
 
@@ -1020,7 +1039,7 @@ def main() -> int:
     args = parse_cli_args()
     TRACE_ENABLED = bool(getattr(args, "trace", False))
     
-    PRIMERA_VERSION= ask_yes_no("¿Es una primera versión?", default_yes=False)
+    PRIMERA_VERSION= ask_yes_no("¿Es una primera versión funcional (Primero instalaríamos en TestPyPI para asegurarnos)?", default_yes=False)
 
     report = DiagnosisReport()
 
